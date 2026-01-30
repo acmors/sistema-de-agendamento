@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAccount {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
 
     private String email;
 
