@@ -11,11 +11,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client extends UserAccount{
+public class Client{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
 
     @Column(nullable = false, unique = true)
     private String cpf;
+
+    @OneToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private UserAccount user;
 
 }

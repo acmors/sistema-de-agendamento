@@ -1,5 +1,6 @@
 package com.sistesmareserva.controller;
 
+import com.sistesmareserva.DTO.client.CreateClientDTO;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,15 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<Client> create(@RequestBody Client client){
-        clientService.create(client, client.getPassword());
+    public ResponseEntity<Client> create(@RequestBody CreateClientDTO dto){
+        Client client = clientService.create(
+                dto.email(),
+                dto.password(),
+                dto.name(),
+                dto.cpf()
+        );
+
         return ResponseEntity.status(201).body(client);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Client>> listAllClients(){
-        return ResponseEntity.ok(clientService.listAllClients());
-    }
 }
