@@ -24,4 +24,24 @@ public class UserAccountService {
             throw new RuntimeException("Ocorreu um erro ao criar um novo usuario");
         }
     }
+
+    public UserAccount updatePassword(Long id, String currentPassword, String newPassword, String confirmPassword){
+        if(!newPassword.equals(confirmPassword)){
+            throw new RuntimeException("new password dont match with password confirmation");
+        }
+
+        UserAccount user = findById(id);
+        if(!currentPassword.equals(user.getPassword())){
+            throw new RuntimeException("Current password is wrong.");
+        }
+
+        user.setPassword(newPassword);
+        return userRepository.save(user);
+    }
+
+
+    public UserAccount findById(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Id not found"));
+    }
 }

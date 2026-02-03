@@ -1,0 +1,28 @@
+package com.sistesmareserva.controller;
+
+import com.sistesmareserva.DTO.user.UserPasswordDTO;
+import com.sistesmareserva.model.UserAccount;
+import com.sistesmareserva.service.UserAccountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
+public class UserAccountController {
+
+    private final UserAccountService userService;
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody  UserPasswordDTO dto){
+        UserAccount user = userService.updatePassword(id, dto.currentPassword(), dto.newPassword(), dto.confirmPassword());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserAccount> findById(@PathVariable Long id){
+        var user = userService.findById(id);
+        return ResponseEntity.ok(user);
+    }
+}
