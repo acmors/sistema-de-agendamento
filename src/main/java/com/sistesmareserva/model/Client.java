@@ -26,4 +26,7 @@ public class Client{
     @JoinColumn(name = "id_usuario", nullable = false)
     private UserAccount user;
 
+    @OneToMany(mappedBy = "client")
+    private Reservation reservation;
+
 }
