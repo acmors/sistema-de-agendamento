@@ -1,5 +1,6 @@
 package com.sistesmareserva.model;
 
+import com.sistesmareserva.model.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,9 @@ public class Reservation {
     private LocalDateTime checkoutDate;
 
     private BigDecimal totalValue;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus reservationStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
