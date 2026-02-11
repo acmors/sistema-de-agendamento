@@ -20,17 +20,17 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    public BigDecimal value;
+    private BigDecimal value;
 
-    public LocalDateTime paymentDate;
-
-    @Enumerated(EnumType.STRING)
-    public PaymentMethod paymentMethod;
+    private LocalDateTime paymentDate;
 
     @Enumerated(EnumType.STRING)
-    public PaymentStatus paymentStatus;
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @OneToOne
     @JoinColumn(name = "reservation_id")

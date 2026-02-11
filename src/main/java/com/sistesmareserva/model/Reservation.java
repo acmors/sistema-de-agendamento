@@ -33,8 +33,9 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+    @OneToOne(mappedBy = "reservation")
+    private Payment payment;
 }

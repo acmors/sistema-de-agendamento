@@ -31,5 +31,11 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+    @Transactional(readOnly = true)
+    public Client findById(Long id){
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Clint not found."));
+    }
+
 
 }
