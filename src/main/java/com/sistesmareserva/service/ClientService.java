@@ -34,7 +34,7 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client findById(Long id){
         return clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Clint not found."));
+                .orElseThrow(() -> new RuntimeException("Client not found."));
     }
 
 
