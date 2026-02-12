@@ -1,13 +1,11 @@
 package com.sistesmareserva.controller;
 
-import com.sistesmareserva.DTO.client.CreateClientDTO;
+import com.sistesmareserva.dto.client.CreateClientDTO;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController

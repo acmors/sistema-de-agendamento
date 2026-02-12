@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -27,6 +29,6 @@ public class Client{
     private UserAccount user;
 
     @OneToMany(mappedBy = "client")
-    private Reservation reservation;
+    private List<Reservation> reservations;
 
 }

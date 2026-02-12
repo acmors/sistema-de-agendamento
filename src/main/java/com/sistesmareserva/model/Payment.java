@@ -22,6 +22,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "amount")
     private BigDecimal value;
 
     private LocalDateTime paymentDate;

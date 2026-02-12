@@ -1,4 +1,4 @@
-package com.sistesmareserva.DTO.user;
+package com.sistesmareserva.dto.user;
 
 public record UserPasswordDTO(
          String currentPassword,

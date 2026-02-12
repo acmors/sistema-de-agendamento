@@ -1,4 +1,4 @@
-package com.sistesmareserva.DTO.client;
+package com.sistesmareserva.dto.client;
 
 public record CreateClientDTO(
     String name,

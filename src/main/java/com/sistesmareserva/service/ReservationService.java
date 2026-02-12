@@ -1,5 +1,9 @@
 package com.sistesmareserva.service;
 
+import com.sistesmareserva.dto.reservation.CreateReservationDTO;
+import com.sistesmareserva.dto.reservation.ReservationMapper;
+import com.sistesmareserva.dto.reservation.ResponseReservationDTO;
+import com.sistesmareserva.dto.reservation.UpdateReservationDTO;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.model.Reservation;
 import com.sistesmareserva.model.Room;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -23,31 +28,27 @@ public class ReservationService {
     private final RoomService roomService;
 
     @Transactional
-    public Reservation create(Long clientId, Long roomId, LocalDateTime checking, LocalDateTime checkout){
+    public ResponseReservationDTO create(CreateReservationDTO dto){
 
-        Client client = clientService.findById(clientId);
-        Room room = roomService.findById(roomId);
+        Client client = clientService.findById(dto.clientId());
+        Room room = roomService.findById(dto.roomId());
 
-        if (checkout.isBefore(checking)){
-            throw new RuntimeException("Checkout cannot be before checking");
-        }
-
-        long days = ChronoUnit.DAYS.between(checking.toLocalDate(), checkout.toLocalDate());
-        if (days <= 0){
-            throw new IllegalArgumentException("Reservation must be at least 1 day");
-        }
+        long days = ChronoUnit.DAYS.between(dto.checking(), dto.checkout());
+        if (days <= 0) throw new IllegalArgumentException("Reservation must be at least 1 day");
 
         BigDecimal totalPrice = room.getPricePerDay().multiply(BigDecimal.valueOf(days));
 
         Reservation reservation = new Reservation();
         reservation.setClient(client);
         reservation.setRoom(room);
-        reservation.setCheckingDate(checking);
-        reservation.setCheckoutDate(checkout);
+        reservation.setCheckingDate(dto.checking());
+        reservation.setCheckoutDate(dto.checkout());
         reservation.setTotalValue(totalPrice);
         reservation.setReservationStatus(ReservationStatus.PENDING);
 
-        return reservationRepository.save(reservation);
+        Reservation saved = reservationRepository.save(reservation);
+
+        return ReservationMapper.toDTO(saved);
     }
 
     @Transactional(readOnly = true)
@@ -57,23 +58,46 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reservation> findAll(){
-        return reservationRepository.findAll();
+    public ResponseReservationDTO findByIdDto(Long id){
+        Reservation reservation = findById(id);
+
+        return ReservationMapper.toDTO(reservation);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseReservationDTO> findAll(){
+       return reservationRepository.findAll()
+               .stream()
+               .map(ReservationMapper::toDTO)
+               .toList();
     }
 
     @Transactional
-    public Reservation update(Long id, Reservation newReservation){
+    public ResponseReservationDTO update(Long id, UpdateReservationDTO dto){
         Reservation reservation = findById(id);
 
-        reservation.setCheckingDate(newReservation.getCheckingDate());
-        reservation.setCheckoutDate(newReservation.getCheckoutDate());
-        reservation.setTotalValue(newReservation.getTotalValue());
+        if (dto.checkout() != null) reservation.setCheckoutDate(dto.checkout());
+        if(dto.status() != null) reservation.setReservationStatus(dto.status());
 
-        return reservationRepository.save(reservation);
+        Reservation update = reservationRepository.save(reservation);
+        return ReservationMapper.toDTO(update);
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId){
+        Reservation reservation = findById(reservationId);
+
+        if (reservation.getReservationStatus() == ReservationStatus.CANCELED){
+            throw new IllegalArgumentException("Reservation already cancelled");
+        }
+
+        reservation.setReservationStatus(ReservationStatus.CANCELED);
+        reservationRepository.save(reservation);
     }
 
     @Transactional
     public void deleteById(Long id){
+        Reservation reservation = findById(id);
         reservationRepository.deleteById(id);
     }
 

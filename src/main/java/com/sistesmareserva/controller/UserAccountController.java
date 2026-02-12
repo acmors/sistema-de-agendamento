@@ -1,6 +1,6 @@
 package com.sistesmareserva.controller;
 
-import com.sistesmareserva.DTO.user.UserPasswordDTO;
+import com.sistesmareserva.dto.user.UserPasswordDTO;
 import com.sistesmareserva.model.UserAccount;
 import com.sistesmareserva.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
