@@ -1,9 +1,11 @@
 package com.sistesmareserva.service;
 
-import com.sistesmareserva.dto.reservation.CreateReservationDTO;
-import com.sistesmareserva.dto.reservation.ReservationMapper;
-import com.sistesmareserva.dto.reservation.ResponseReservationDTO;
-import com.sistesmareserva.dto.reservation.UpdateReservationDTO;
+import com.sistesmareserva.exception.EntityNotFoundException;
+import com.sistesmareserva.exception.StatusAlreadyExistsException;
+import com.sistesmareserva.web.dto.reservation.CreateReservationDTO;
+import com.sistesmareserva.web.dto.reservation.ReservationMapper;
+import com.sistesmareserva.web.dto.reservation.ResponseReservationDTO;
+import com.sistesmareserva.web.dto.reservation.UpdateReservationDTO;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.model.Reservation;
 import com.sistesmareserva.model.Room;
@@ -14,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public Reservation findById(Long id){
         return reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("entity not found"));
+                .orElseThrow(() -> new EntityNotFoundException("entity not found"));
     }
 
     @Transactional(readOnly = true)
@@ -88,7 +88,7 @@ public class ReservationService {
         Reservation reservation = findById(reservationId);
 
         if (reservation.getReservationStatus() == ReservationStatus.CANCELED){
-            throw new IllegalArgumentException("Reservation already cancelled");
+            throw new StatusAlreadyExistsException("Reservation is already cancelled");
         }
 
         reservation.setReservationStatus(ReservationStatus.CANCELED);

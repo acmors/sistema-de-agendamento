@@ -1,10 +1,18 @@
 package com.sistesmareserva.service;
 
+import com.sistesmareserva.exception.ConflictException;
+import com.sistesmareserva.exception.EntityNotFoundException;
+import com.sistesmareserva.exception.UsernameUniqueViolationException;
 import com.sistesmareserva.model.UserAccount;
 import com.sistesmareserva.model.enums.Role;
 import com.sistesmareserva.repository.UserAccountRepository;
+import com.sistesmareserva.web.dto.user.CreateUserAccountDTO;
+import com.sistesmareserva.web.dto.user.ResponseUserAccountDTO;
+import com.sistesmareserva.web.dto.user.UserAccountMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -12,7 +20,7 @@ public class UserAccountService {
 
     private final UserAccountRepository userRepository;
 
-
+    @Transactional
     public UserAccount create(String email, String password ){
         try {
             UserAccount user = new UserAccount();
@@ -20,19 +28,26 @@ public class UserAccountService {
             user.setPassword(password);
             user.setRole(Role.USER);
             return userRepository.save(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Ocorreu um erro ao criar um novo usuario");
+        } catch (DataIntegrityViolationException e) {
+            throw new UsernameUniqueViolationException("Username already exists.");
         }
     }
 
+    @Transactional
+    public ResponseUserAccountDTO create(CreateUserAccountDTO dto){
+        UserAccount user = create(dto.email(), dto.password());
+        return UserAccountMapper.toDTO(user);
+    }
+
+    @Transactional
     public UserAccount updatePassword(Long id, String currentPassword, String newPassword, String confirmPassword){
         if(!newPassword.equals(confirmPassword)){
-            throw new RuntimeException("new password dont match with password confirmation");
+            throw new ConflictException("new password dont match with password confirmation");
         }
 
         UserAccount user = findById(id);
         if(!currentPassword.equals(user.getPassword())){
-            throw new RuntimeException("Current password is wrong.");
+            throw new ConflictException("Current password is wrong.");
         }
 
         user.setPassword(newPassword);
@@ -40,8 +55,15 @@ public class UserAccountService {
     }
 
 
+    @Transactional(readOnly = true)
     public UserAccount findById(Long id){
         return userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Id not found"));
+                .orElseThrow(()-> new EntityNotFoundException("User not found."));
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseUserAccountDTO findByIdDto(Long id){
+        UserAccount user = findById(id);
+        return UserAccountMapper.toDTO(user);
     }
 }

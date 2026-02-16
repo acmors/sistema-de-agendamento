@@ -1,11 +1,17 @@
 package com.sistesmareserva.service;
 
+import com.sistesmareserva.exception.EntityNotFoundException;
+import com.sistesmareserva.exception.UsernameUniqueViolationException;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.model.UserAccount;
 import com.sistesmareserva.model.enums.Role;
 import com.sistesmareserva.repository.ClientRepository;
+import com.sistesmareserva.web.dto.client.ClientMapper;
+import com.sistesmareserva.web.dto.client.ClientResponseDTO;
+import com.sistesmareserva.web.dto.client.CreateClientDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,19 +28,31 @@ public class ClientService {
 
 
     @Transactional
-    public Client create(String email, String password, String name,String cpf){
-        UserAccount user = userService.create(email, password);
-        Client client = new Client();
-        client.setUser(user);
-        client.setName(name);
-        client.setCpf(cpf);
-        return clientRepository.save(client);
+    public ClientResponseDTO create(CreateClientDTO dto){
+        try {
+            UserAccount user = userService.create(dto.email(), dto.password());
+            Client client = new Client();
+            client.setUser(user);
+            client.setName(dto.name());
+            client.setCpf(dto.cpf());
+            Client saved = clientRepository.save(client);
+
+            return ClientMapper.toDTO(saved);
+        } catch (DataIntegrityViolationException ex){
+            throw new UsernameUniqueViolationException("Username already exists");
+        }
     }
 
     @Transactional(readOnly = true)
     public Client findById(Long id){
         return clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found."));
+                .orElseThrow(() -> new EntityNotFoundException("Client not found."));
+    }
+
+    @Transactional
+    public ClientResponseDTO findByIdDto(Long id){
+        Client client = findById(id);
+        return ClientMapper.toDTO(client);
     }
 
 

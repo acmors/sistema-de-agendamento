@@ -1,11 +1,12 @@
 package com.sistesmareserva.service;
 
-import com.sistesmareserva.dto.payment.CreatePaymentDTO;
-import com.sistesmareserva.dto.payment.PaymentMapper;
-import com.sistesmareserva.dto.payment.ResponsePaymentDTO;
+import com.sistesmareserva.exception.ConflictException;
+import com.sistesmareserva.exception.StatusAlreadyExistsException;
+import com.sistesmareserva.web.dto.payment.CreatePaymentDTO;
+import com.sistesmareserva.web.dto.payment.PaymentMapper;
+import com.sistesmareserva.web.dto.payment.ResponsePaymentDTO;
 import com.sistesmareserva.model.Payment;
 import com.sistesmareserva.model.Reservation;
-import com.sistesmareserva.model.enums.PaymentMethod;
 import com.sistesmareserva.model.enums.PaymentStatus;
 import com.sistesmareserva.model.enums.ReservationStatus;
 import com.sistesmareserva.repository.PaymentRepository;
@@ -28,8 +29,8 @@ public class PaymentService {
 
         Reservation reservation = reservationService.findById(dto.reservationId());
 
-        if (reservation.getReservationStatus() == ReservationStatus.CANCELED) throw new IllegalArgumentException("Reservation status is cancelled");
-        if (reservation.getReservationStatus() == ReservationStatus.APPROVED) throw new IllegalArgumentException("Reservation already paid.");
+        if (reservation.getReservationStatus() == ReservationStatus.CANCELED) throw new ConflictException("Reservation status is cancelled");
+        if (reservation.getReservationStatus() == ReservationStatus.APPROVED) throw new ConflictException("Reservation already paid.");
 
         Payment payment = new Payment();
         payment.setReservation(reservation);

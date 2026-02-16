@@ -1,9 +1,11 @@
 package com.sistesmareserva.service;
 
-import com.sistesmareserva.dto.room.*;
+import com.sistesmareserva.exception.EntityNotFoundException;
+import com.sistesmareserva.exception.ResourceAlreadyExistsException;
 import com.sistesmareserva.model.Room;
 import com.sistesmareserva.model.enums.Status;
 import com.sistesmareserva.repository.RoomRepository;
+import com.sistesmareserva.web.dto.room.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +22,7 @@ public class RoomService {
     @Transactional
     public ResponseRoomDTO create(CreateRoomDTO dto){
 
-        if (roomRepository.existsByNumber(dto.number())) throw new IllegalArgumentException("Already exists a room with this number");
+        if (roomRepository.existsByNumber(dto.number())) throw new ResourceAlreadyExistsException("Already exists a room with this number");
 
         Room room = new Room();
         room.setNumber(dto.number());
@@ -35,7 +37,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public Room findById(Long id){
         return roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Entity not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
     @Transactional(readOnly = true)
     public ResponseRoomDTO findByIdDto(Long id){
