@@ -34,12 +34,12 @@ public class RoomController {
         return ResponseEntity.ok(roomService.findByIdDto(id));
    }
 
-   @PutMapping("/{id}")
+   @PutMapping("/{id}/price")
     public ResponseEntity<ResponseRoomDTO> updateRoomPrice(@PathVariable Long id, @RequestBody UpdateRoomPriceDTO room){
         return ResponseEntity.ok(roomService.updateRoomPrice(id, room));
    }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<ResponseRoomDTO> updateRoomStatus(@PathVariable Long id, @RequestBody UpdateRoomStatusDTO dto){
         return ResponseEntity.ok(roomService.updateRoomStatus(id, dto));
     }

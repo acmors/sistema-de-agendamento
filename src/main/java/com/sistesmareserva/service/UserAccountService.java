@@ -2,6 +2,7 @@ package com.sistesmareserva.service;
 
 import com.sistesmareserva.exception.ConflictException;
 import com.sistesmareserva.exception.EntityNotFoundException;
+import com.sistesmareserva.exception.PasswordInvalidException;
 import com.sistesmareserva.exception.UsernameUniqueViolationException;
 import com.sistesmareserva.model.UserAccount;
 import com.sistesmareserva.model.enums.Role;
@@ -42,12 +43,12 @@ public class UserAccountService {
     @Transactional
     public UserAccount updatePassword(Long id, String currentPassword, String newPassword, String confirmPassword){
         if(!newPassword.equals(confirmPassword)){
-            throw new ConflictException("new password dont match with password confirmation");
+            throw new PasswordInvalidException("new password dont match with password confirmation");
         }
 
         UserAccount user = findById(id);
         if(!currentPassword.equals(user.getPassword())){
-            throw new ConflictException("Current password is wrong.");
+            throw new PasswordInvalidException("Current password is wrong.");
         }
 
         user.setPassword(newPassword);

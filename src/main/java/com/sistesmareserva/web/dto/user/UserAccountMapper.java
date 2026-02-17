@@ -6,6 +6,7 @@ public class UserAccountMapper {
 
     public static ResponseUserAccountDTO toDTO(UserAccount user){
        return new ResponseUserAccountDTO(
+               user.getId(),
                 user.getEmail()
         );
     }

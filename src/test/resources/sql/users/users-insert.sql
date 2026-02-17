@@ -1,0 +1,2 @@
+INSERT INTO tb_user(id, email, password, role) values (100, 'marcolas@gmail.com', '12345678', 'ADMIN');
+INSERT INTO tb_user(id, email, password, role) values (200, 'jhon@gmail.com', '12345678', 'USER');

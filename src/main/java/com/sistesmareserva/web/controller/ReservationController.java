@@ -39,7 +39,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.update(id, reservation));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id){
         reservationService.cancelReservation(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
