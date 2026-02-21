@@ -8,7 +8,7 @@ public class ReservationMapper {
         return new ResponseReservationDTO(
                 reservation.getClient().getName(),
                 reservation.getRoom().getNumber(),
-                reservation.getCheckingDate(),
+                reservation.getCheckinDate(),
                 reservation.getCheckoutDate(),
                 reservation.getTotalValue(),
                 reservation.getReservationStatus()

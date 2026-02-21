@@ -26,12 +26,15 @@ public class Payment {
     @Column(name = "amount")
     private BigDecimal value;
 
+    @Column(name = "paymentDate")
     private LocalDateTime paymentDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "paymentMethod")
     private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "paymentStatus")
     private PaymentStatus paymentStatus;
 
     @OneToOne

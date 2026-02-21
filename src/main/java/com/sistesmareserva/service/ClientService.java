@@ -23,7 +23,6 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    @Autowired
     private final UserAccountService userService;
 
 
@@ -49,10 +48,27 @@ public class ClientService {
                 .orElseThrow(() -> new EntityNotFoundException("Client not found."));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ClientResponseDTO findByIdDto(Long id){
-        Client client = findById(id);
+       Client client = findById(id);
+
+       return ClientMapper.toDTO(client);
+    }
+
+
+    @Transactional(readOnly = true)
+    public ClientResponseDTO findByCpfDTO(String cpf){
+        Client client = clientRepository.findByCpf(cpf)
+                .orElseThrow(() -> new EntityNotFoundException("CPF not found."));
         return ClientMapper.toDTO(client);
+
+    }
+
+    @Transactional(readOnly = true)
+    public Client findByCpf(String cpf){
+        return clientRepository.findByCpf(cpf)
+                .orElseThrow(() -> new EntityNotFoundException("CPF not found."));
+
     }
 
 

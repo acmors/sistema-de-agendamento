@@ -2,11 +2,13 @@ package com.sistesmareserva.service;
 
 import com.sistesmareserva.exception.EntityNotFoundException;
 import com.sistesmareserva.exception.ResourceAlreadyExistsException;
+import com.sistesmareserva.exception.RoomNumberUniqueViolationException;
 import com.sistesmareserva.model.Room;
 import com.sistesmareserva.model.enums.Status;
 import com.sistesmareserva.repository.RoomRepository;
 import com.sistesmareserva.web.dto.room.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +24,18 @@ public class RoomService {
     @Transactional
     public ResponseRoomDTO create(CreateRoomDTO dto){
 
-        if (roomRepository.existsByNumber(dto.number())) throw new ResourceAlreadyExistsException("Already exists a room with this number");
+        try {
+            Room room = new Room();
+            room.setNumber(dto.number());
+            room.setType(dto.type());
+            room.setPricePerDay(dto.pricePerDay());
+            room.setStatus(Status.AVAILABLE);
 
-        Room room = new Room();
-        room.setNumber(dto.number());
-        room.setType(dto.type());
-        room.setPricePerDay(dto.pricePerDay());
-        room.setStatus(Status.AVAILABLE);
-        
-        Room save = roomRepository.save(room);
-        return RoomMapper.toDTO(save);
+            Room save = roomRepository.save(room);
+            return RoomMapper.toDTO(save);
+        }catch (DataIntegrityViolationException e){
+            throw new RoomNumberUniqueViolationException("Number room already exists.");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -39,9 +43,17 @@ public class RoomService {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
+
     @Transactional(readOnly = true)
-    public ResponseRoomDTO findByIdDto(Long id){
-        Room room = findById(id);
+    public Room findByRoomNumber(int roomNumber){
+        return roomRepository.findByNumber(roomNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Room number not found."));
+
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseRoomDTO findByRoomNumberDto(int roomNumber){
+        Room room = findByRoomNumber(roomNumber);
         return RoomMapper.toDTO(room);
     }
 

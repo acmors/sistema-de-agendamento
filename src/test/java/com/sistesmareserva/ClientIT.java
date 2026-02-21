@@ -1,8 +1,9 @@
 package com.sistesmareserva;
 
+import com.sistesmareserva.web.dto.client.ClientResponseDTO;
+import com.sistesmareserva.web.dto.client.CreateClientDTO;
 import com.sistesmareserva.web.dto.user.CreateUserAccountDTO;
 import com.sistesmareserva.web.dto.user.ResponseUserAccountDTO;
-import com.sistesmareserva.web.dto.user.UserPasswordDTO;
 import com.sistesmareserva.web.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,31 +17,31 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebClient
-@Sql(scripts = "/sql/users/users-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "/sql/users/users-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class UserAccountIT {
+@Sql(scripts = "/sql/client/clients-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/sql/client/clients-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+public class ClientIT {
 
     @Autowired
     WebTestClient testClient;
 
     @Test
-    @DisplayName("Create user with valid params, should return 201")
+    @DisplayName("Create client with valid params, should return 201.")
     public void createCase01(){
-
-        ResponseUserAccountDTO responseDTO = testClient
+        ClientResponseDTO response = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@gmail.com", "12345678"))
+                .bodyValue(new CreateClientDTO("matheus", "56702389078", "matheus@gmail.com", "12345678"))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(ResponseUserAccountDTO.class)
+                .expectBody(ClientResponseDTO.class)
                 .returnResult().getResponseBody();
 
-        Assertions.assertThat(responseDTO).isNotNull();
-        Assertions.assertThat(responseDTO.id()).isNotNull();
-        Assertions.assertThat(responseDTO.email()).isEqualTo("breno@gmail.com");
-
+        org.assertj.core.api.Assertions.assertThat(response).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(response.id()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(response.name()).isEqualTo("matheus");
+        org.assertj.core.api.Assertions.assertThat(response.cpf()).isEqualTo("56702389078");
+        org.assertj.core.api.Assertions.assertThat(response.email()).isEqualTo("matheus@gmail.com");
     }
 
     @Test
@@ -49,9 +50,9 @@ public class UserAccountIT {
 
         ErrorMessage responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("", "12345678"))
+                .bodyValue(new CreateClientDTO("marcos","98126444070","", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -63,20 +64,20 @@ public class UserAccountIT {
 
         responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@", "12345678"))
+                .bodyValue(new CreateClientDTO("marcos","98126444070","pedro@", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
 
-    responseDTO = testClient
+        responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@gmail", "12345678"))
+                .bodyValue(new CreateClientDTO("marcos","98126444070","pedro@gmail", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -89,9 +90,9 @@ public class UserAccountIT {
 
         ErrorMessage responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@gmail.com", ""))
+                .bodyValue(new CreateClientDTO("breno", "76717836091", "breno@gmail.com", ""))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -103,9 +104,9 @@ public class UserAccountIT {
 
         responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@gmail.com", "123456"))
+                .bodyValue(new CreateClientDTO("breno", "76717836091", "breno@gmail.com", "1234"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -114,9 +115,9 @@ public class UserAccountIT {
 
         responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("breno@gmail.com", "1234567890123456789123"))
+                .bodyValue(new CreateClientDTO("breno", "76717836091", "breno@gmail.com", "123456789784512326598159"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -128,9 +129,9 @@ public class UserAccountIT {
     public void createCase04(){
         ErrorMessage responseDTO = testClient
                 .post()
-                .uri("/api/v1/users")
+                .uri("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CreateUserAccountDTO("jhon@gmail.com", "12345678"))
+                .bodyValue(new CreateClientDTO("jhon", "76717836091", "jhon@gmail.com", "123456789"))
                 .exchange()
                 .expectStatus().isEqualTo(409)
                 .expectBody(ErrorMessage.class)
@@ -143,16 +144,16 @@ public class UserAccountIT {
     @Test
     @DisplayName("Find a user by a valid id, should return 200.")
     public void findCase01(){
-        ResponseUserAccountDTO responseDTO = testClient
+        ClientResponseDTO responseDTO = testClient
                 .get()
-                .uri("/api/v1/users/100")
+                .uri("/api/v1/clients/10")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(ResponseUserAccountDTO.class)
+                .expectBody(ClientResponseDTO.class)
                 .returnResult().getResponseBody();
 
         org.assertj.core.api.Assertions.assertThat(responseDTO).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(responseDTO.id()).isEqualTo(100);
+        org.assertj.core.api.Assertions.assertThat(responseDTO.id()).isEqualTo(10);
     }
 
     @Test
@@ -160,7 +161,7 @@ public class UserAccountIT {
     public void findCase02(){
         ErrorMessage responseDTO = testClient
                 .get()
-                .uri("/api/v1/users/101")
+                .uri("/api/v1/clients/101")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
@@ -171,68 +172,32 @@ public class UserAccountIT {
     }
 
     @Test
-    @DisplayName("Update password with valid params, should return 204")
-    public void updatePasswordCase01(){
-        testClient
-                .patch()
-                .uri("/api/v1/users/100")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserPasswordDTO("12345678", "123456789", "123456789"))
+    @DisplayName("Find a user by a valid CPF, should return 200.")
+    public void findCase03(){
+        ClientResponseDTO responseDTO = testClient
+                .get()
+                .uri("/api/v1/clients/cpf/86225140050")
                 .exchange()
-                .expectStatus().isNoContent();
+                .expectStatus().isOk()
+                .expectBody(ClientResponseDTO.class)
+                .returnResult().getResponseBody();
 
-        testClient
-                .patch()
-                .uri("/api/v1/users/200")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserPasswordDTO("12345678", "123456789", "123456789"))
-                .exchange()
-                .expectStatus().isNoContent();
+        org.assertj.core.api.Assertions.assertThat(responseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDTO.cpf()).isEqualTo("86225140050");
     }
 
     @Test
-    @DisplayName("Update password with invalid params, should return 422")
-    public void updatePasswordCase02(){
-       ErrorMessage responseDTO =  testClient
-                .patch()
-                .uri("/api/v1/users/200")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserPasswordDTO("", "", ""))
+    @DisplayName("Find a user by an invalid CPF, should return 404.")
+    public void findCase04(){
+        ErrorMessage responseDTO = testClient
+                .get()
+                .uri("/api/v1/clients/cpf/86225140058")
                 .exchange()
-                .expectStatus().isEqualTo(422)
+                .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
-       Assertions.assertThat(responseDTO).isNotNull();
-       Assertions.assertThat(responseDTO.getStatus()).isEqualTo(422);
-
-       responseDTO =  testClient
-                .patch()
-                .uri("/api/v1/users/200")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserPasswordDTO("12345678", "1234567891234564567898", "1234567891234564567898"))
-                .exchange()
-                .expectStatus().isEqualTo(422)
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
-
-        Assertions.assertThat(responseDTO).isNotNull();
-        Assertions.assertThat(responseDTO.getStatus()).isEqualTo(422);
-
-        responseDTO =  testClient
-                .patch()
-                .uri("/api/v1/users/200")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserPasswordDTO("12345678", "123456789", "12345678"))
-                .exchange()
-                .expectStatus().isEqualTo(400)
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
-
-        Assertions.assertThat(responseDTO).isNotNull();
-        Assertions.assertThat(responseDTO.getStatus()).isEqualTo(400);
+        org.assertj.core.api.Assertions.assertThat(responseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDTO.getStatus()).isEqualTo(404);
     }
-
-
-
 }

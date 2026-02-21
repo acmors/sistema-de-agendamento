@@ -4,6 +4,7 @@ import com.sistesmareserva.web.dto.client.ClientResponseDTO;
 import com.sistesmareserva.web.dto.client.CreateClientDTO;
 import com.sistesmareserva.model.Client;
 import com.sistesmareserva.service.ClientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +17,20 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ClientResponseDTO> create(@RequestBody CreateClientDTO dto){
+    public ResponseEntity<ClientResponseDTO> create(@Valid @RequestBody CreateClientDTO dto){
         return ResponseEntity.status(201).body(clientService.create(dto));
     }
 
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<ClientResponseDTO> findByCpf(@PathVariable String cpf){
+        return ResponseEntity.ok().body(clientService.findByCpfDTO(cpf));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> findByIdDto(@PathVariable Long id){
         return ResponseEntity.ok().body(clientService.findByIdDto(id));
     }
+
 
 }

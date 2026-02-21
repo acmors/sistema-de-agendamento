@@ -26,14 +26,18 @@ public class Reservation {
     private Long id;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate checkingDate;
+    @Column(name = "checkin" ,nullable = false)
+    private LocalDate checkinDate;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "checkout" ,nullable = false)
     private LocalDate checkoutDate;
 
+    @Column(name = "check-in")
     private BigDecimal totalValue;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "reservationStatus")
     private ReservationStatus reservationStatus;
 
 

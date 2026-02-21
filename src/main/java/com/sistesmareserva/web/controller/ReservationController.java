@@ -4,6 +4,7 @@ import com.sistesmareserva.web.dto.reservation.CreateReservationDTO;
 import com.sistesmareserva.web.dto.reservation.ResponseReservationDTO;
 import com.sistesmareserva.web.dto.reservation.UpdateReservationDTO;
 import com.sistesmareserva.service.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<ResponseReservationDTO> create(@RequestBody CreateReservationDTO reservation){
+    public ResponseEntity<ResponseReservationDTO> create(@Valid @RequestBody CreateReservationDTO reservation){
         return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.create(reservation));
     }
 

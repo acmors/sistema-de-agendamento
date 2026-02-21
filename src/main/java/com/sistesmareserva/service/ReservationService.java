@@ -30,8 +30,8 @@ public class ReservationService {
     @Transactional
     public ResponseReservationDTO create(CreateReservationDTO dto){
 
-        Client client = clientService.findById(dto.clientId());
-        Room room = roomService.findById(dto.roomId());
+        Client client = clientService.findByCpf(dto.cpf());
+        Room room = roomService.findByRoomNumber(dto.roomNumber());
 
         long days = ChronoUnit.DAYS.between(dto.checking(), dto.checkout());
         if (days <= 0) throw new IllegalArgumentException("Reservation must be at least 1 day");
@@ -41,7 +41,7 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         reservation.setClient(client);
         reservation.setRoom(room);
-        reservation.setCheckingDate(dto.checking());
+        reservation.setCheckinDate(dto.checking());
         reservation.setCheckoutDate(dto.checkout());
         reservation.setTotalValue(totalPrice);
         reservation.setReservationStatus(ReservationStatus.PENDING);

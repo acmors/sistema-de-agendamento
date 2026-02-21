@@ -1,8 +1,10 @@
 package com.sistesmareserva.web.dto.client;
 
 public record ClientResponseDTO (
-       String name,
-       String email
+        Long id,
+        String name,
+        String email,
+        String cpf
 ){
 
 }

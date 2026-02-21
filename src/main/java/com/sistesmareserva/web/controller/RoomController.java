@@ -5,6 +5,7 @@ import com.sistesmareserva.web.dto.room.ResponseRoomDTO;
 import com.sistesmareserva.web.dto.room.UpdateRoomPriceDTO;
 import com.sistesmareserva.web.dto.room.UpdateRoomStatusDTO;
 import com.sistesmareserva.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<ResponseRoomDTO> create(@RequestBody CreateRoomDTO dto){
+    public ResponseEntity<ResponseRoomDTO> create(@Valid @RequestBody CreateRoomDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.create(dto));
     }
 
@@ -29,9 +30,9 @@ public class RoomController {
         return ResponseEntity.ok(roomService.listRooms());
    }
 
-   @GetMapping("/{id}")
-    public ResponseEntity<ResponseRoomDTO> findByIdDto(@PathVariable Long id){
-        return ResponseEntity.ok(roomService.findByIdDto(id));
+   @GetMapping("/{number}")
+    public ResponseEntity<ResponseRoomDTO> findByNumber(@PathVariable int number){
+        return ResponseEntity.ok(roomService.findByRoomNumberDto(number));
    }
 
    @PutMapping("/{id}/price")

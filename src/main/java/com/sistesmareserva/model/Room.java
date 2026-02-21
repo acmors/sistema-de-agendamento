@@ -23,12 +23,16 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int number;
+    @Column(name = "number", nullable = false, unique = true)
+    private Integer number;
 
+    @Column(name = "type", nullable = false)
     private Type type;
 
+    @Column(name = "pricePerDay", nullable = false)
     private BigDecimal pricePerDay;
 
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @OneToMany(mappedBy = "room")
