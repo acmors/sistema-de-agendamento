@@ -2,8 +2,6 @@ package com.sistesmareserva;
 
 import com.sistesmareserva.web.dto.client.ClientResponseDTO;
 import com.sistesmareserva.web.dto.client.CreateClientDTO;
-import com.sistesmareserva.web.dto.user.CreateUserAccountDTO;
-import com.sistesmareserva.web.dto.user.ResponseUserAccountDTO;
 import com.sistesmareserva.web.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

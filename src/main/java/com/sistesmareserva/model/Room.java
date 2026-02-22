@@ -27,12 +27,14 @@ public class Room {
     private Integer number;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Column(name = "pricePerDay", nullable = false)
     private BigDecimal pricePerDay;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(mappedBy = "room")

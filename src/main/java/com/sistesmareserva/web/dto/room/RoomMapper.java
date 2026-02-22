@@ -6,6 +6,7 @@ public class RoomMapper {
 
     public static ResponseRoomDTO toDTO(Room room){
         return new ResponseRoomDTO(
+                room.getId(),
                 room.getNumber(),
                 room.getType(),
                 room.getPricePerDay(),
