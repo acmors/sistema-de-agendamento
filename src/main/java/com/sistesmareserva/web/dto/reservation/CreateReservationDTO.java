@@ -13,7 +13,7 @@ public record CreateReservationDTO(
 
             @JsonFormat(pattern = "dd/MM/yyyy")
             @NotNull
-            LocalDate checking,
+            LocalDate checkin,
 
             @JsonFormat(pattern = "dd/MM/yyyy")
             @NotNull
